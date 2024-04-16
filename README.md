@@ -78,6 +78,6 @@ Den studerande har nått samtliga mål för kursen. Den studerande kan dessutom
 
 | Innehåll | Introduktion | Deadline | Täcker upp betygskriterier |
 | ------ | ------ | ------ | ------- |
-| Lab1: SQL, CRUD | 2024-04-26 | 2023-05-03 | 2, 8, 10, 14 |
-| Lab2: Databasdesign | 2023-05-03 | 2023-05-17 | 1, 3, 4, 6, 9, 11, 12, 13 |
-| Skriftlig tenta | 2023-05-17 | - | 1-5, 7 |
+| Lab1: SQL, CRUD | 2024-04-26 | 2024-05-03 | 2, 8, 10, 14 |
+| Lab2: Databasdesign | 2024-05-03 | 2024-05-17 | 1, 3, 4, 6, 9, 11, 12, 13 |
+| Skriftlig tenta | 2024-05-17 | - | 1-5, 7 |
