@@ -35,3 +35,34 @@ select * from GameOfThrones where Season not in (2,5,7);
 -- uppgift 3
 
 select Season as Säsong, EpisodeInSeason as Avsnitt, Title as Titel, [U.S. viewers(millions)] from GameOfThrones where 4 < [U.S. viewers(millions)] and [U.S. viewers(millions)] < 5;
+
+-- Like
+
+select * from GameOfThrones where Title like '[a-c]%'
+
+-- order by
+
+select * from GameOfThrones order by Title;
+
+-- distinct
+
+select distinct [Directed by] from GameOfThrones;
+
+-- aliases (denna förstod jag ej)
+
+select Title, Episode as key from GameOfThrones -- fel
+
+-- union
+
+
+
+-- Case whebn
+
+select
+	City,
+	case
+		when population < 1500 then 'Village'
+		when population < 50000 then 'Town'
+		else City
+		end as ’Classification’
+From UScities;
