@@ -63,5 +63,38 @@ DECLARE @report NVARCHAR(MAX) = '';
 -- Skriver ut den ackumulerade rapporten till Messages-fönstret i SQL Server
  PRINT @report;
 
--- d)
+-- d) lite hjälp från gpt
 
+select
+	concat(FirstName, ' ', LastName) as 'Namn',
+	(datediff(day, convert(date, left(ID, 6)), convert(date, getdate()))) / 365.25 as 'Ålder',
+	case
+		when substring(right(ID,2), 1, 1) % 2 = 0 then 'Kvinna'
+		else 'Man'
+	end as 'Kön'
+from
+	Users
+order by
+	FirstName,
+	LastName;
+
+-- e) finns denna ens? (som jag inte gjort själv med bara fyra länder?)
+
+select
+	*
+
+from
+	countries;
+
+-- f)
+
+select
+	right(rtrim([Location served]), charindex(',', reverse(rtrim([Location served]))+',')-1) as Country,
+	count(IATA) as 'number of airports',
+	sum(case when ICAO is null then 1 else 0 end) num_ICAO_nulls
+from
+	Airports
+group by
+	right(rtrim([Location served]), charindex(',', reverse(rtrim([Location served]))+',')-1)
+
+select * from Airports;
