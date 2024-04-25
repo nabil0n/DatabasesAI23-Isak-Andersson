@@ -21,39 +21,39 @@
 --		Select * from [länder] l
 --		join [städer] s on s.landsID = l.landsID;
 
-drop table countries;
+drop table iths.dbo.countries;
 
-create table countries (
+create table iths.dbo.countries (
 	id int,
 	name nvarchar(max)
 );
 
-insert into countries values (1, 'Sverige');
-insert into countries values (2, 'Norge');
-insert into countries values (3, 'Danmark');
-insert into countries values (4, 'Finland');
+insert into iths.dbo.countries values (1, 'Sverige');
+insert into iths.dbo.countries values (2, 'Norge');
+insert into iths.dbo.countries values (3, 'Danmark');
+insert into iths.dbo.countries values (4, 'Finland');
 
-drop table cities;
+drop table iths.dbo.cities;
 
-create table cities (
+create table iths.dbo.cities (
 	id int,
 	name nvarchar(max),
 	countryId int
 )
 
-insert into cities values (1, 'Stockholm', 1);
-insert into cities values (2, 'Göteborg', 1);
-insert into cities values (3, 'Malmö', 1);
-insert into cities values (4, 'Oslo', 2);
-insert into cities values (5, 'Bergen', 2);
-insert into cities values (6, 'Köpenhamn', 3);
-insert into cities values (7, 'London', 5);
+insert into iths.dbo.cities values (1, 'Stockholm', 1);
+insert into iths.dbo.cities values (2, 'Göteborg', 1);
+insert into iths.dbo.cities values (3, 'Malmö', 1);
+insert into iths.dbo.cities values (4, 'Oslo', 2);
+insert into iths.dbo.cities values (5, 'Bergen', 2);
+insert into iths.dbo.cities values (6, 'Köpenhamn', 3);
+insert into iths.dbo.cities values (7, 'London', 5);
 
-select * from countries;
-select * from cities;
+select * from iths.dbo.countries;
+select * from iths.dbo.cities;
 
 
-select * from countries cross join cities; -- 4x7 (makes no sense)
+select * from iths.dbo.countries cross join iths.dbo.cities; -- 4x7 (makes no sense)
 
 select
 	cities.id,
@@ -62,8 +62,8 @@ select
 	countries.id,
 	cities.countryId
 from
-	countries
-	join cities on countries.id = cities.countryId; -- Tolkas auto som inner om bara join
+	iths.dbo.countries
+	join iths.dbo.cities on iths.dbo.countries.id = iths.dbo.cities.countryId; -- Tolkas auto som inner om bara join
 
 select
 	cities.name as 'Cities',
@@ -71,8 +71,8 @@ select
 	countries.id,
 	cities.countryId
 from
-	countries
-	full join cities on countries.id = cities.countryId;
+	iths.dbo.countries
+	full join iths.dbo.cities on iths.dbo.countries.id = iths.dbo.cities.countryId;
 
 select
 	cities.name as 'Cities',
@@ -80,8 +80,8 @@ select
 	countries.id,
 	cities.countryId
 from
-	countries
-	right join cities on countries.id = cities.countryId;
+	iths.dbo.countries
+	right join iths.dbo.cities on iths.dbo.countries.id = iths.dbo.cities.countryId;
 
 select
 	cities.name as 'Cities',
@@ -89,8 +89,8 @@ select
 	countries.id,
 	cities.countryId
 from
-	countries
-	left join cities on countries.id = cities.countryId;
+	iths.dbo.countries
+	left join iths.dbo.cities on iths.dbo.countries.id = iths.dbo.cities.countryId;
 
 -- uppgift 1
 
@@ -99,9 +99,9 @@ select
 	count(cities.name) as 'Number of cities',
 	isnull(string_agg(cities.name, ', '), '-') as 'Cities'
 from
-	countries full outer join cities on countries.id = cities.countryId
+	iths.dbo.countries full outer join iths.dbo.cities on iths.dbo.countries.id = iths.dbo.cities.countryId
 group by
-	countries.name;
+	iths.dbo.countries.name;
 
 --
 

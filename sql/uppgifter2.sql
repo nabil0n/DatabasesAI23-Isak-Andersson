@@ -31,70 +31,78 @@ group by
 having
 	count(city) > 1;
 
--- c) chatgpt lösning (Mikael)
+-- c) chatgpt lï¿½sning (Mikael)
 	
 DECLARE @report NVARCHAR(MAX) = '';
  
 ;WITH SeasonSummary AS (
  	SELECT
      	Season,
-     	MIN([Original air date]) AS StartDate, -- Hämtar det tidigaste datumet för säsongen
-     	MAX([Original air date]) AS EndDate, -- Hämtar det senaste datumet för säsongen
+     	MIN([Original air date]) AS StartDate, -- Hï¿½mtar det tidigaste datumet fï¿½r sï¿½songen
+     	MAX([Original air date]) AS EndDate, -- Hï¿½mtar det senaste datumet fï¿½r sï¿½songen
      	COUNT(*) AS EpisodeCount,
-     	CAST(AVG(CAST([U.S. viewers(millions)] AS FLOAT)) AS DECIMAL(10,2)) AS AvgViewers -- Beräknar genomsnittet och formaterar till två decimaler
+     	CAST(AVG(CAST([U.S. viewers(millions)] AS FLOAT)) AS DECIMAL(10,2)) AS AvgViewers -- Berï¿½knar genomsnittet och formaterar till tvï¿½ decimaler
  	FROM
      	GameOfThrones
  	GROUP BY
      	Season
  )
  
--- Skapar en sträng för varje säsong
+-- Skapar en strï¿½ng fï¿½r varje sï¿½song
  SELECT @report = @report +
- 	'Säsong ' + CAST(Season AS VARCHAR) + ' sändes från ' +
+ 	'Sï¿½song ' + CAST(Season AS VARCHAR) + ' sï¿½ndes frï¿½n ' +
  	FORMAT(StartDate, 'MMMM', 'sv') + ' till ' +
- 	FORMAT(EndDate, 'Y', 'sv') + '. Totalt sändes ' +
- 	CAST(EpisodeCount AS VARCHAR) + ' avsnitt, som i genomsnitt sågs av ' +
- 	CAST(AvgViewers AS VARCHAR) + ' miljoner människor i USA.' + CHAR(13) + CHAR(10)
+ 	FORMAT(EndDate, 'Y', 'sv') + '. Totalt sï¿½ndes ' +
+ 	CAST(EpisodeCount AS VARCHAR) + ' avsnitt, som i genomsnitt sï¿½gs av ' +
+ 	CAST(AvgViewers AS VARCHAR) + ' miljoner mï¿½nniskor i USA.' + CHAR(13) + CHAR(10)
  FROM
  	SeasonSummary
  ORDER BY
  	Season;
  
--- Skriver ut den ackumulerade rapporten till Messages-fönstret i SQL Server
+-- Skriver ut den ackumulerade rapporten till Messages-fï¿½nstret i SQL Server
  PRINT @report;
 
--- d) lite hjälp från gpt
+-- d) lite hjï¿½lp frï¿½n chatgpt
 
 select
 	concat(FirstName, ' ', LastName) as 'Namn',
-	(datediff(day, convert(date, left(ID, 6)), convert(date, getdate()))) / 365.25 as 'Ålder',
+	floor((datediff(day, convert(date, left(ID, 6)), getdate())) / 365.25) as 'ï¿½lder',
 	case
 		when substring(right(ID,2), 1, 1) % 2 = 0 then 'Kvinna'
 		else 'Man'
-	end as 'Kön'
+	end as 'Kï¿½n'
 from
 	Users
 order by
 	FirstName,
 	LastName;
 
--- e) finns denna ens? (som jag inte gjort själv med bara fyra länder?)
+-- e) WOOPS. Denna tog jag visst bort (pï¿½ datorn hemma). Men hï¿½r ï¿½r asajds lï¿½sning:
 
-select
-	*
+update countries
+set [Infant mortality (per 1000 births)] = replace([Infant mortality (per 1000 births)], ',', '.');
 
+SELECT
+    [Region],
+    count([Country]) as 'Number of Countries',
+    SUM(convert(bigint, [Population])) as 'Total Population',
+    sum([Area (sq# mi#)]) as 'Total Area',
+    sum(convert(bigint, [Population]))/sum([Area (sq# mi#)]) as 'Population Density',
+    round(avg(convert(float, [Infant mortality (per 1000 births)])), 2) as 'Average Infant Mortality'
 from
-	countries;
+    countries
+group by
+    [Region];
 
--- f)
+-- f) (med hjï¿½lp frï¿½n stackoverflow)
 
 select
 	right(rtrim([Location served]), charindex(',', reverse(rtrim([Location served]))+',')-1) as Country,
 	count(IATA) as 'number of airports',
-	sum(case when ICAO is null then 1 else 0 end) num_ICAO_nulls
+	sum(case when ICAO is null then 1 else 0 end) as 'number of ICAO nulls',
+	format((sum(case when ICAO is null then 1 else 0 end) / cast(count(IATA) as float)), 'p') as '% of airports is ICAO nulls'
 from
 	Airports
 group by
 	right(rtrim([Location served]), charindex(',', reverse(rtrim([Location served]))+',')-1)
-
-select * from Airports;
