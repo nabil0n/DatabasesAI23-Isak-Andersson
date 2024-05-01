@@ -96,16 +96,73 @@ order by
 
 -- MUSIC
 
-declare @playlist varchar(max) = 'Heavy Metal Music';
+select * from music.playlists
+select * from music.tracks
+select * from music.genres
+select * from music.albums
+select * from music.playlist_track
+
+declare @playlist varchar(max) = 'Classical';
 
 SELECT
-    *
-from
-    music.tracks,
-    music.albums
+    g.Name as 'Genre',
+    ar.Name as 'Artist',
+    a.Title as 'Album',
+    t.Name as 'Track',
+    format(dateadd(MILLISECOND, t.Milliseconds, 0), 'mm:ss') as 'Duration',
+    format(bytes / power(1024.0, 2), '0.0')+' MiB' as 'Size',
+    isnull(Composer, '-') as 'Composer',
+    p.Name as 'Playlist'
+From
+    music.tracks t
+    join music.genres g on g.GenreId = t.GenreId
+    join music.albums a on a.AlbumId = t.AlbumId
+    join music.artists ar on ar.ArtistId = a.ArtistId
+    join music.playlist_track pt on pt.TrackId = t.TrackId
+    join music.playlists p on p.PlaylistId = pt.PlaylistId
+WHERE
+    p.Name = @playlist
+order BY
+    g.Name, ar.Name, a.Title, t.Name;
+
+-- 1. Av alla audiospår, vilken artist har längst total speltid?
+
+select * from music.tracks where MediaTypeId <> 3
+
+select
+    ar.Name,
+    sum(tr.Milliseconds)/1000 as total_track_time_s,
+    count(TrackId) as total_nbr_tracks,
+
+-- 2. Vad är den genomsnittliga speltiden på den artistens låtar?
+    (sum(tr.Milliseconds)/count(TrackId))/1000 as avg_track_time_sec
+from music.tracks tr
+    left join music.albums al on tr.AlbumId = al.AlbumId
+    left join music.artists ar on al.ArtistId = ar.ArtistId
+where 
+    MediaTypeId <> 3
+group by 
+    ar.Name
+order by 
+    total_track_time_s desc
+
+
+-- 3. Vad är den sammanlagda filstorleken för all video?
 
 SELECT
-    *
-from
-    music.artists a join music.albums al on a.ArtistId = al.ArtistId,
-    music.tracks t join music.albums t.AlbumId = t.AlbumId
+    concat(round(convert(float, sum(convert(bigint, t.bytes))) / power(1024.0, 3), 1), ' GiB') as 'Total Size'
+FROM
+    music.tracks t
+where 
+    MediaTypeId = 3
+order by
+    'Total Size' desc;
+
+
+-- 4. Vilket är det högsta antal artister som finns på en enskild spellista?
+
+
+
+
+-- 5. Vilket är det genomsnittliga antalet artister per spellista?
+

@@ -12,6 +12,7 @@ seaborn = "*"
 ipykernel = "*"
 scikit-learn = "*"
 pyarrow = "*"
+pyodbc = "*"
 
 [dev-packages]
 
