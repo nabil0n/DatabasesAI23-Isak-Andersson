@@ -1,7 +1,5 @@
 -- MoonMissions
 
--- select * from MoonMissions order by Outcome
-
 select
     Spacecraft,
     [Launch date],
@@ -24,15 +22,16 @@ set
 
 GO
 
--- VG UPPGIFT
--- select
---     left(rtrim([Spacecraft]), charindex('(', reverse(rtrim([Spacecraft]))+'('))
--- from
---     SuccessfulMissions
+select
+    case
+        when charindex('(', Spacecraft) > 0 and charindex(')', Spacecraft) > 0
+            then stuff(Spacecraft, charindex('(', Spacecraft), charindex(')', Spacecraft) - charindex('(', Spacecraft) + 1, '')
+        else Spacecraft
+    end as Spacecraft
+from
+    SuccessfulMissions;
 
 GO
-
-select * from SuccessfulMissions
 
 select
     Operator,
@@ -66,8 +65,6 @@ from
     Users;
 
 GO
-
-select * from NewUsers order by UserName
 
 select
     UserName,
@@ -104,8 +101,6 @@ set
 where
     ID = '880706-3713';
 
-select * from NewUsers order by UserName
-
 GO
 
 delete from
@@ -122,22 +117,27 @@ values
     ('990706-3713', 'karkar', '004m46abd464041efd309gf550f72652', 'Karl', 'Karlsson', 'kalleballe@gmail.com', '070-2525252', 'Karl Karlsson', 'Male');
 
 GO
-
---
--- VG UPPGIFT
---
+-- Denna blev lite rörig då jag utgick från lite gpt stöd (ärlighet varar längst? :P).
+-- Tips på praxis för att få det mer lättläst? Ska varje parentes ha en egen rad typ?
+select
+    Gender,
+    avg(datediff(year, convert(datetime, case 
+                                            when
+                                                cast(substring(ID, 1, 2) as int) > cast(right(year(getdate()), 2) as int)
+                                            then
+                                                '19' + substring(ID, 1, 2) 
+                                            else
+                                                '20' + substring(ID, 1, 2)
+                                        end + '-' + substring(ID, 3, 2) + '-' + substring(ID, 5, 2)), getdate())
+    ) as 'Average Age'
+from
+    NewUsers
+group by
+    Gender;
 
 GO
 
 -- Company (Joins)
-
-select * from company.products
-select * from company.categories
-select * from company.suppliers
-select * from company.regions
-select * from company.employees
-select * from company.employee_territory
-select * from company.territories
 
 select
     p.id,
@@ -164,6 +164,16 @@ group by
 
 GO
 
---
--- VG UPPGIFT
---
+select
+    e.Id,
+    concat(e.TitleOfCourtesy, ' ', e.FirstName, ' ', e.LastName) as 'Name',
+    case
+        when e.ReportsTo is null then 'Nobody!'
+        else concat(m.TitleOfCourtesy, ' ', m.FirstName, ' ', m.LastName)
+    end as 'Reports To'
+from
+    company.employees e
+    left join company.employees m on e.reportsTo = m.id
+
+GO
+
