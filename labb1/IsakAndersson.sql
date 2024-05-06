@@ -103,11 +103,21 @@ where
 
 GO
 
+-- Rättad:
+
 delete from
     NewUsers
 where
     Gender = 'Female' and
-    convert(date, left(ID, 6)) <= dateadd(year, -70, sysdatetime());
+    left(ID, 2) < '70';
+
+-- Gammal (haha, fattar inte hur jag kunde läsa frågan så fel):
+
+-- delete from
+--     NewUsers
+-- where
+--     Gender = 'Female' and
+--     convert(date, left(ID, 6)) <= dateadd(year, -70, sysdatetime());
 
 GO
 
@@ -151,9 +161,11 @@ from
 
 GO
 
+-- Rättad (la till distinct):
+
 select
     r.RegionDescription,
-    count(e.Id) as 'Number of employees'
+    count(distinct e.Id) as 'Number of employees'
 from
     company.employees e join
     company.employee_territory et on e.id = et.employeeid join
