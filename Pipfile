@@ -13,6 +13,7 @@ ipykernel = "*"
 scikit-learn = "*"
 pyarrow = "*"
 pyodbc = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
