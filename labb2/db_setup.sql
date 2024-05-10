@@ -17,7 +17,7 @@ end;
 create table Böcker (
     ISBN13 nvarchar(50) primary key,
     constraint chk_ISBN13 check (dbo.CheckISBN13(ISBN13) = 1),
-    Titel varchar(50) not null,
+    Titel varchar(max) not null,
     Språk varchar(50) not null,
     Pris decimal(10, 2) not null,
     Utgivningsdatum date not null,
@@ -58,9 +58,26 @@ create table Förlag (
 
 create table Ratings (
     Id int primary key,
-    Betyg int not null,
-    Kommentar varchar(50) not null,
+    Betyg dec(10, 2),
+    AntalRöster int,
     BokId nvarchar(50) not null foreign key references Böcker(ISBN13)
 );
 
 alter table Böcker add FörlagId int foreign key references Förlag(Id);
+
+-- skapa fiktiva bokhandlar
+
+select * from Butiker;
+
+insert into Butiker values (1, 'Fredriks gamla böcker', 'Fejkplatsen 11');
+insert into Butiker values (2, 'Everybooks', 'Hittepågatan 23');
+insert into Butiker values (3, 'Johanssons script & pergament', 'Fantasivägen 42');
+
+
+drop table RAWbooks;
+-- visa allt
+
+select
+    *
+from
+    RAWbooks;
